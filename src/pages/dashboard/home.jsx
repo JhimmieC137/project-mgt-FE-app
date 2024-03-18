@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { format } from "date-fns";
 import { SlPlus } from "react-icons/sl";
 import {
   Typography,
@@ -34,8 +35,31 @@ import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 import SearchBar from "@/widgets/layout/search-bar";
 import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
 import { BsListUl } from "react-icons/bs";
+import { serverUrl } from "@/configs/endpoints";
 
 export function Home() {
+
+  const [data, setData] = useState(null);
+
+  function getProjects() {
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+      setData(JSON.parse(this.responseText));
+    }
+    
+    try{
+      xhttp.open("GET", `${serverUrl.projects.base}`);
+      xhttp.send();
+    }
+    catch (e){
+      console.log("error fetching")
+    }
+
+  }
+
+  getProjects()
+  
   return (
     <div className="">
       <div className="py-3 flex place-content-between">
@@ -168,10 +192,11 @@ export function Home() {
                 </tr>
               </thead>
               <tbody>
-                {projectsTableData.map(
-                  ({ img, name, members, budget, completion }, key) => {
+                {data ?
+                  data.results.map(
+                  ({ name, created_at, due_in, tasks_completed, tasks }, key) => {
                     const className = `py-3 px-5 ${
-                      key === projectsTableData.length - 1
+                      key === data.results.length - 1
                         ? ""
                         : ""
                     }`;
@@ -183,7 +208,7 @@ export function Home() {
                         >
                         <td className={`${className} first:rounded-l-xl  my-2 first:bg-blue-gray-50/50`}>
                           <div className="flex items-center gap-2">
-                            <Avatar src={img} alt={name} size="sm" />
+                            <Avatar src={"/img/logo-xd.svg"} alt={name} size="sm" />
                             <div className="pl-2">
                               <Typography
                                 variant="small"
@@ -195,9 +220,9 @@ export function Home() {
                               <Typography
                                 variant="small"
                                 color="blue-gray"
-                                className="font-bold text-xs font-medium text-blue-gray-600 text-left"
+                                className="font-bold text-xs font-medium text-blue-gray-300 text-left"
                               >
-                                Oct 20, 2021
+                                {created_at}
                               </Typography>
                             </div>
                           </div>
@@ -208,7 +233,7 @@ export function Home() {
                               variant="small"
                               className="text-sm  text-center font-medium text-blue-gray-600"
                             >
-                              3d, 12m
+                              {due_in}
                             </Typography>
                           </div>
                         </td>
@@ -218,7 +243,7 @@ export function Home() {
                               variant="small"
                               className="text-md font-medium text-blue-gray-600"
                             >
-                              90/148
+                              {`${tasks_completed}/${tasks}`}
                             </Typography>
                             <Typography
                               variant="small"
@@ -241,15 +266,15 @@ export function Home() {
                               </Typography>
                             </div>
                             <Progress
-                              value={completion}
+                              value={(tasks_completed/tasks)*100}
                               variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
+                              color={((tasks_completed/tasks)*100) === 100 ? "green" : "blue"}
                               className="h-1"
                             />
                           </div>
                         </td>
                         <td className={`${className} last:rounded-r-xl last:bg-blue-gray-50/50`}>
-                          {members.map(({ img, name }, key) => (
+                          {projectsTableData[1].members.map(({ img, name }, key) => (
                             <Tooltip key={name} content={name}>
                               <Avatar
                                 src={img}
@@ -266,7 +291,8 @@ export function Home() {
                       </tr>
                     );
                   }
-                )}
+                ): null
+                }
               </tbody>
             </table>
           </CardBody>
@@ -338,8 +364,7 @@ export function Home() {
                     color="blue-gray"
                     className="text-sm px-3 font-medium text-blue-gray-600 mb-2"
                     >
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perspiciatis vitae similique est rerum suscipit deleniti 
-                      ipsum dolore vero dolor eligendi placeat sed minus aliquam harum eius nobis porro, deserunt asperiores.
+                      The meeting aims to show areas of improvement and ensure the design aligns with the user needs and business goals
                   </Typography>
                   <div className="bg-blue-gray-50 mt-5 mx-1.5 rounded-2xl py-2 px-4">
                     <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
@@ -384,8 +409,20 @@ export function Home() {
                           >
                             Members
                         </Typography>
+                        {projectsTableData[3].members.map(({ img, name }, key) => (
+                          <Tooltip key={name} content={name}>
+                            <Avatar
+                              src={img}
+                              alt={name}
+                              size="xs"
+                              variant="circular"
+                              className={`cursor-pointer border-2 border-white ${
+                                key === 0 ? "" : "-ml-2.5"
+                              }`}
+                            />
+                          </Tooltip>
+                          ))}
                       </div>
-
                     </div>
                   </div>
                 </div>
