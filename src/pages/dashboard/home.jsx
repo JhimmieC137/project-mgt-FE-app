@@ -15,6 +15,9 @@ import {
   Tooltip,
   Progress,
   Button,
+  Tabs,
+  TabsHeader,
+  Tab,
 } from "@material-tailwind/react";
 import {
   EllipsisVerticalIcon,
@@ -22,6 +25,7 @@ import {
   PlayCircleIcon,
   PlusSmallIcon,
   UserPlusIcon,
+  ClipboardDocumentCheckIcon,
 } from "@heroicons/react/24/outline";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
@@ -31,12 +35,19 @@ import {
   projectsTableData,
   ordersOverviewData,
 } from "@/data";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { ClockIcon as ClockIconOutline } from "@heroicons/react/24/outline";
 import SearchBar from "@/widgets/layout/search-bar";
 import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
 import { BsListUl } from "react-icons/bs";
 import { serverUrl } from "@/configs/endpoints";
 import { BiLoaderCircle } from "react-icons/bi";
+import {
+  HomeIcon,
+  ChatBubbleLeftEllipsisIcon,
+  Cog6ToothIcon,
+  PencilIcon,
+} from "@heroicons/react/24/solid";
 
 export function Home() {
 
@@ -60,9 +71,10 @@ export function Home() {
     }
   }
 
-  useEffect(() => {
-    setInterval(() => getProjects(), 10000);
-  }, [])
+  // useEffect(() => {
+  //   getProjects()
+  //   setInterval(() => getProjects(), 10000);
+  // }, [])
   
   return (
     <div className="">
@@ -175,6 +187,28 @@ export function Home() {
             </Menu>
           </CardHeader> */}
           <CardBody className="w-full min-w-[640px] pt-5 pb-2">
+            <div className="flex place-content-between w-full px-2 py-4">
+              <Typography
+                variant="small"
+                className="text-[11px] font-medium uppercase text-blue-gray-400"
+              >
+                {`results found`}
+              </Typography>
+              <div className="w-80">
+                <Tabs value="Ongoing">
+                  <TabsHeader>
+                    <Tab value="Ongoing">
+                      <ClockIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
+                      Ongoing
+                    </Tab>
+                    <Tab value="Completed">
+                      <CheckIcon className="-mt-0.5 mr-2 inline-block h-5 w-5" />
+                      Completed
+                    </Tab>
+                  </TabsHeader>
+                </Tabs>
+              </div>
+            </div>
             {
               loading ? 
               <div className="min-w-[640px]  flex place-content-center w-full my-36">
@@ -189,6 +223,29 @@ export function Home() {
                 />
               </div>
               :
+              <>
+              <div className="flex place-content between w-full px-2 py-4">
+                <Typography
+                  variant="small"
+                  className="text-[11px] font-medium uppercase text-blue-gray-400"
+                >
+                  {`${data.count} results found`}
+                </Typography>
+                <div className="w-96">
+                  <Tabs value="Ongoing">
+                    <TabsHeader>
+                      <Tab value="Ongoing">
+                        <HomeIcon className="-mt-1 mr-2 inline-block h-5 w-5" />
+                        Ongoing
+                      </Tab>
+                      <Tab value="Completed">
+                        <ChatBubbleLeftEllipsisIcon className="-mt-0.5 mr-2 inline-block h-5 w-5" />
+                        Completed
+                      </Tab>
+                    </TabsHeader>
+                  </Tabs>
+                </div>
+              </div>
               <table className="w-full min-w-[640px] table-auto border-separate border-spacing-y-5">
                 <thead>
                   <tr className="table-auto drop-shadow-lg  bg-white bg-blue-gray-50/50">
@@ -313,121 +370,199 @@ export function Home() {
                   }
                 </tbody>
               </table>
+              </>
             }
           </CardBody>
         </Card>
         <div className="px-5 bg-transparent">
-          <Card className="bg-transparent shadow-sm">
-            <CardHeader
-              floated={false}
-              shadow={false}
-              color="transparent"
-              className="flex place-content-between m-0 p-6"
-            >
-              <Typography variant="h5" color="blue-gray" className="mb-2">
-                Upcomming meeting
-              </Typography>
-              <a className="text-gray-sky-500 hover:underline" href="/#">see all</a>
-              {/* <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
+          <div className="bg-transparent">
+            <Card className="bg-transparent shadow-sm">
+              <CardHeader
+                floated={false}
+                shadow={false}
+                color="transparent"
+                className="flex place-content-between m-0 p-6"
               >
-                <ArrowUpIcon
-                  strokeWidth={3}
-                  className="h-3.5 w-3.5 text-green-500"
-                />
-                <strong>24%</strong> this month
-              </Typography> */}
-            </CardHeader>
-            <CardBody className="pt-0 px-7">
-              {/* {ordersOverviewData.map(
-                ({ icon, color, title, description }, key) => (
-                  <div key={title} className="flex items-start gap-4 py-3">
-                    <div
-                      className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
-                        key === ordersOverviewData.length - 1
-                          ? "after:h-0"
-                          : "after:h-4/6"
-                      }`}
-                    >
-                      {React.createElement(icon, {
-                        className: `!w-5 !h-5 ${color}`,
-                      })}
+                <Typography variant="h5" color="blue-gray" className="mb-2">
+                  Upcoming meeting
+                </Typography>
+                <a className="text-gray-sky-500 hover:underline" href="/#">see all</a>
+                {/* <Typography
+                  variant="small"
+                  className="flex items-center gap-1 font-normal text-blue-gray-600"
+                >
+                  <ArrowUpIcon
+                    strokeWidth={3}
+                    className="h-3.5 w-3.5 text-green-500"
+                  />
+                  <strong>24%</strong> this month
+                </Typography> */}
+              </CardHeader>
+              <CardBody className="pt-0 px-7">
+                {/* {ordersOverviewData.map(
+                  ({ icon, color, title, description }, key) => (
+                    <div key={title} className="flex items-start gap-4 py-3">
+                      <div
+                        className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
+                          key === ordersOverviewData.length - 1
+                            ? "after:h-0"
+                            : "after:h-4/6"
+                        }`}
+                      >
+                        {React.createElement(icon, {
+                          className: `!w-5 !h-5 ${color}`,
+                        })}
+                      </div>
+                      <div>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-medium"
+                        >
+                          {title}
+                        </Typography>
+                        <Typography
+                          as="span"
+                          variant="small"
+                          className="text-xs font-medium text-blue-gray-500"
+                        >
+                          {description}
+                        </Typography>
+                      </div>
                     </div>
-                    <div>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-medium"
+                  )
+                )} */}
+                <div className="pt-3 pb-2 rounded-2xl bg-green-100">
+                  <Typography variant="h5" color="blue-gray" className="px-3 mb-2">
+                    Meeting Name
+                  </Typography>
+                  <div className="">
+                    <Typography 
+                      variant="small" 
+                      color="blue-gray"
+                      className="text-sm px-3 font-medium text-blue-gray-600 mb-2"
                       >
-                        {title}
-                      </Typography>
-                      <Typography
-                        as="span"
-                        variant="small"
-                        className="text-xs font-medium text-blue-gray-500"
+                        The meeting aims to show areas of improvement and ensure the design aligns with the user needs and business goals
+                    </Typography>
+                    <div className="bg-blue-gray-50 mt-5 mx-1.5 rounded-2xl py-2 px-4">
+                      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                        <div className="py-2 text-left">
+                          <Typography 
+                            variant="small" 
+                            color="blue-gray"
+                            className="text-sm font-medium text-blue-gray-300"
+                            >
+                              Time
+                          </Typography>
+                          <Typography 
+                            variant="h6" 
+                            color="blue-gray"
+                            className="text-md font-bold text-blue-gray-600"
+                            >
+                              12:00 - 12:30
+                          </Typography>
+                        </div>
+                        <div className="py-2 text-left">
+                          <Typography 
+                            variant="small" 
+                            color="blue-gray"
+                            className="text-sm font-medium text-blue-gray-300"
+                            >
+                              Duration
+                          </Typography>
+                          <Typography 
+                            variant="h6" 
+                            color="blue-gray"
+                            className="text-md font-bold text-blue-gray-600"
+                            >
+                              30 mins
+                          </Typography>
+
+                        </div>
+                        <div className="py-2 text-left">
+                          <Typography 
+                            variant="small" 
+                            color="blue-gray"
+                            className="text-sm font-medium text-blue-gray-300"
+                            >
+                              Members
+                          </Typography>
+                          {projectsTableData[3].members.map(({ img, name }, key) => (
+                            <Tooltip key={name} content={name}>
+                              <Avatar
+                                src={img}
+                                alt={name}
+                                size="xs"
+                                variant="circular"
+                                className={`cursor-pointer border-2 border-white ${
+                                  key === 0 ? "" : "-ml-2.5"
+                                }`}
+                              />
+                            </Tooltip>
+                            ))}
+                        </div>
+                      </div>
+                      <div className="w-full my-3 px-6">
+                        <Button
+                          variant="gradient"
+                          color="blue-gray"
+                          className="flex place-content-center items-center rounded-2xl text-center gap-4 px-4 capitalize"
+                          fullWidth
+                        >
+                          {/* {icon} */}
+                          <Typography
+                            color="inherit"
+                            className="font-medium capitalize"
+                          >
+                            Join Meeting
+                          </Typography>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+          <div className="bg-transparent">
+            <Card className="bg-transparent shadow-sm">
+              <CardHeader
+                floated={false}
+                shadow={false}
+                color="transparent"
+                className="flex place-content-between m-0 px-6 py-3.5"
+              >
+                <Typography 
+                  variant="h5" 
+                  color="blue-gray"
+                  className="mb-2"
+                  >
+                    Upcoming Tasks
+                </Typography>
+              </CardHeader>
+              <CardBody className="pt-0 px-7">
+                <div className="bg-white my-5 drop-shadow-xl rounded-2xl pt-3 pl-2 pr-6">
+                  <div className="flex place-content-between">
+                    <Typography 
+                      variant="h6" 
+                      color="blue-gray"
+                      className="text-md font-bold text-blue-gray-600"
                       >
-                        {description}
+                        Product Planning
+                    </Typography>
+                    <div className="bg-yellow-100 rounded-2xl px-2 py-1">
+                      <Typography 
+                        variant="small" 
+                        color=""
+                        className="text-xs font-medium text-yellow-600"
+                        >
+                          Urgent
                       </Typography>
                     </div>
                   </div>
-                )
-              )} */}
-              <div className="pt-3 pb-2 rounded-2xl bg-green-100">
-                <Typography variant="h5" color="blue-gray" className="px-3 mb-2">
-                  Meeting Name
-                </Typography>
-                <div className="">
-                  <Typography 
-                    variant="small" 
-                    color="blue-gray"
-                    className="text-sm px-3 font-medium text-blue-gray-600 mb-2"
-                    >
-                      The meeting aims to show areas of improvement and ensure the design aligns with the user needs and business goals
-                  </Typography>
-                  <div className="bg-blue-gray-50 mt-5 mx-1.5 rounded-2xl py-2 px-4">
-                    <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                      <div className="py-2 text-left">
-                        <Typography 
-                          variant="small" 
-                          color="blue-gray"
-                          className="text-sm font-medium text-blue-gray-300"
-                          >
-                            Time
-                        </Typography>
-                        <Typography 
-                          variant="h6" 
-                          color="blue-gray"
-                          className="text-md font-bold text-blue-gray-600"
-                          >
-                            12:00 - 12:30
-                        </Typography>
-                      </div>
-                      <div className="py-2 text-left">
-                        <Typography 
-                          variant="small" 
-                          color="blue-gray"
-                          className="text-sm font-medium text-blue-gray-300"
-                          >
-                            Duration
-                        </Typography>
-                        <Typography 
-                          variant="h6" 
-                          color="blue-gray"
-                          className="text-md font-medium text-blue-gray-600"
-                          >
-                            30 mins
-                        </Typography>
-
-                      </div>
-                      <div className="py-2 text-left">
-                        <Typography 
-                          variant="small" 
-                          color="blue-gray"
-                          className="text-sm font-medium text-blue-gray-300"
-                          >
-                            Members
-                        </Typography>
+                  <div className="w-full flex flex-row justify-between">
+                    <div className="basis-2/3 my-1">
+                      <div className="w-full">
                         {projectsTableData[3].members.map(({ img, name }, key) => (
                           <Tooltip key={name} content={name}>
                             <Avatar
@@ -435,20 +570,113 @@ export function Home() {
                               alt={name}
                               size="xs"
                               variant="circular"
-                              className={`cursor-pointer border-2 border-white ${
+                              className={`cursor-pointer border-2 mb-1 border-white ${
                                 key === 0 ? "" : "-ml-2.5"
                               }`}
                             />
                           </Tooltip>
-                          ))}
+                        ))}
+                      </div>
+                      <Progress
+                        value={70}
+                        variant="gradient"
+                        color={70 === 100 ? "green" : "blue"}
+                        className="h-1"
+                      />
+                    </div>
+                    <div className="mt-6">
+                      <div className="flex w-full justify-center">
+                        <ClockIconOutline className="pr-0.5 inline-block h-4 w-4 text-blue-gray-400"/>
+                        <Typography 
+                          variant="small" 
+                          color="blue-gray"
+                          className="text-xs font-medium text-blue-gray-400"
+                          >
+                            10:00-11:00
+                        </Typography>
                       </div>
                     </div>
                   </div>
+                  <div className="w-full text-left py-3 pl-1">
+                    <Typography 
+                      variant="small" 
+                      color="blue-gray"
+                      className="text-xs font-medium text-blue-gray-200"
+                      >
+                        Management
+                    </Typography>
+                  </div>
                 </div>
-              </div>
-            </CardBody>
-          </Card>
-        </div>  
+                <div className="bg-white my-5 drop-shadow-xl rounded-2xl pt-3 pl-2 pr-6">
+                  <div className="flex place-content-between">
+                    <Typography 
+                      variant="h6" 
+                      color="blue-gray"
+                      className="text-md font-bold text-blue-gray-600"
+                      >
+                        Product Planning
+                    </Typography>
+                    <div className="bg-yellow-100 rounded-2xl px-2 py-1">
+                      <Typography 
+                        variant="small" 
+                        color=""
+                        className="text-xs font-medium text-yellow-600"
+                        >
+                          Urgent
+                      </Typography>
+                    </div>
+                  </div>
+                  <div className="w-full flex flex-row justify-between">
+                    <div className="basis-2/3 my-1">
+                      <div className="w-full">
+                        {projectsTableData[3].members.map(({ img, name }, key) => (
+                          <Tooltip key={name} content={name}>
+                            <Avatar
+                              src={img}
+                              alt={name}
+                              size="xs"
+                              variant="circular"
+                              className={`cursor-pointer border-2 mb-1 border-white ${
+                                key === 0 ? "" : "-ml-2.5"
+                              }`}
+                            />
+                          </Tooltip>
+                        ))}
+                      </div>
+                      <Progress
+                        value={70}
+                        variant="gradient"
+                        color={70 === 100 ? "green" : "blue"}
+                        className="h-1"
+                      />
+                    </div>
+                    <div className="mt-6">
+                      <div className="flex w-full justify-center">
+                        <ClockIconOutline className="pr-0.5 inline-block h-4 w-4 text-blue-gray-400"/>
+                        <Typography 
+                          variant="small" 
+                          color="blue-gray"
+                          className="text-xs font-medium text-blue-gray-400"
+                          >
+                            10:00-11:00
+                        </Typography>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full text-left py-3 pl-1">
+                    <Typography 
+                      variant="small" 
+                      color="blue-gray"
+                      className="text-xs font-medium text-blue-gray-200"
+                      >
+                        Management
+                    </Typography>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
