@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { format } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { Circles } from 'react-loader-spinner'
 import { SlPlus } from "react-icons/sl";
 import {
   Typography,
@@ -36,16 +36,19 @@ import SearchBar from "@/widgets/layout/search-bar";
 import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
 import { BsListUl } from "react-icons/bs";
 import { serverUrl } from "@/configs/endpoints";
+import { BiLoaderCircle } from "react-icons/bi";
 
 export function Home() {
 
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   function getProjects() {
 
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
       setData(JSON.parse(this.responseText));
+      setLoading(false)
     }
     
     try{
@@ -55,10 +58,11 @@ export function Home() {
     catch (e){
       console.log("error fetching")
     }
-
   }
 
-  getProjects()
+  useEffect(() => {
+    setInterval(() => getProjects(), 10000);
+  }, [])
   
   return (
     <div className="">
@@ -170,131 +174,146 @@ export function Home() {
               </MenuList>
             </Menu>
           </CardHeader> */}
-          <CardBody className="pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto border-separate border-spacing-y-5">
-              <thead>
-                <tr className="table-auto drop-shadow-lg  bg-white bg-blue-gray-50/50">
-                  {["Task name", "Due in", "Tasks", "Status", "Members"].map(
-                    (el) => (
-                      <th
-                      key={el}
-                      className="py-3 px-6 text-left first:rounded-l-xl bg-blue-gray-50/50 last:rounded-r-xl"
-                      >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-medium uppercase text-blue-gray-400"
+          <CardBody className="w-full min-w-[640px] pt-5 pb-2">
+            {
+              loading ? 
+              <div className="min-w-[640px]  flex place-content-center w-full my-36">
+                <Circles
+                  height="50"
+                  width="50"
+                  color="#8B9296"
+                  ariaLabel="circles-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+              </div>
+              :
+              <table className="w-full min-w-[640px] table-auto border-separate border-spacing-y-5">
+                <thead>
+                  <tr className="table-auto drop-shadow-lg  bg-white bg-blue-gray-50/50">
+                    {["Task name", "Due in", "Tasks", "Status", "Members"].map(
+                      (el) => (
+                        <th
+                        key={el}
+                        className="py-3 px-6 text-left first:rounded-l-xl bg-blue-gray-50/50 last:rounded-r-xl"
                         >
-                          {el}
-                        </Typography>
-                      </th>
-                    )
-                    )}
-                </tr>
-              </thead>
-              <tbody>
-                {data ?
-                  data.results.map(
-                  ({ name, created_at, due_in, tasks_completed, tasks }, key) => {
-                    const className = `py-3 px-5 ${
-                      key === data.results.length - 1
-                        ? ""
-                        : ""
-                    }`;
+                          <Typography
+                            variant="small"
+                            className="text-[11px] font-medium uppercase text-blue-gray-400"
+                          >
+                            {el}
+                          </Typography>
+                        </th>
+                      )
+                      )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data ?
+                    data.results.map(
+                    ({ name, created_at, due_in, tasks_completed, tasks }, key) => {
+                      const className = `py-3 px-5 ${
+                        key === data.results.length - 1
+                          ? ""
+                          : ""
+                      }`;
 
-                    return (
-                      <tr 
-                        key={name}
-                        className="bg-white drop-shadow-xl"
-                        >
-                        <td className={`${className} first:rounded-l-xl  my-2 first:bg-blue-gray-50/50`}>
-                          <div className="flex items-center gap-2">
-                            <Avatar src={"/img/logo-xd.svg"} alt={name} size="sm" />
-                            <div className="pl-2">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-bold text-md text-left"
-                              >
-                                {name}
-                              </Typography>
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-bold text-xs font-medium text-blue-gray-300 text-left"
-                              >
-                                {created_at}
-                              </Typography>
-                            </div>
-                          </div>
-                        </td>
-                        <td className={`${className} my-2 bg-blue-gray-50/50`}>
-                          <div className="w-full rounded-l-md bg-sky-950">
-                            <Typography
-                              variant="small"
-                              className="text-sm  text-center font-medium text-blue-gray-600"
-                            >
-                              {due_in}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={`${className} my-2 bg-blue-gray-50/50`}>
-                          <div className="w-full py-2 text-left">
-                            <Typography
-                              variant="small"
-                              className="text-md font-medium text-blue-gray-600"
-                            >
-                              {`${tasks_completed}/${tasks}`}
-                            </Typography>
-                            <Typography
-                              variant="small"
-                              className="text-xs font-bold text-gray-500"
-                            >
-                              Tasks
-                            </Typography>
-
-                          </div>
-                        </td>
-                        <td className={`${className} bg-blue-gray-50/50`}>
-                          <div className="w-10/12 ">
-                            <div className="w-full flex">
-                              <BsListUl className="text-lg pt-1"/>
-                              <Typography
-                                variant="small"
-                                className="mb-1 block px-2 text-md font-medium text-blue-gray-600"
+                      return (
+                        <tr 
+                          key={name}
+                          className="bg-white drop-shadow-xl"
+                          >
+                          <td className={`${className} first:rounded-l-xl  my-2 first:bg-blue-gray-50/50`}>
+                            <div className="flex items-center gap-2">
+                              <Avatar src={"/img/logo-xd.svg"} alt={name} size="sm" />
+                              <div className="pl-2">
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-bold text-md text-left"
                                 >
-                                Progress
+                                  {name}
+                                </Typography>
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-bold text-xs font-medium text-blue-gray-300 text-left"
+                                >
+                                  {created_at}
+                                </Typography>
+                              </div>
+                            </div>
+                          </td>
+                          <td className={`${className} my-2 bg-blue-gray-50/50`}>
+                            <div className="w-full rounded-l-md bg-sky-950">
+                              <Typography
+                                variant="small"
+                                className="text-sm  text-center font-medium text-blue-gray-600"
+                              >
+                                {due_in}
                               </Typography>
                             </div>
-                            <Progress
-                              value={(tasks_completed/tasks)*100}
-                              variant="gradient"
-                              color={((tasks_completed/tasks)*100) === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td>
-                        <td className={`${className} last:rounded-r-xl last:bg-blue-gray-50/50`}>
-                          {projectsTableData[1].members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
+                          </td>
+                          <td className={`${className} my-2 bg-blue-gray-50/50`}>
+                            <div className="w-full py-2 text-left">
+                              <Typography
+                                variant="small"
+                                className="text-md font-medium text-blue-gray-600"
+                              >
+                                {`${tasks_completed}/${tasks}`}
+                              </Typography>
+                              <Typography
+                                variant="small"
+                                className="text-xs font-bold text-gray-500"
+                              >
+                                Tasks
+                              </Typography>
+
+                            </div>
+                          </td>
+                          <td className={`${className} bg-blue-gray-50/50`}>
+                            <div className="w-10/12 ">
+                              <div className="w-full flex">
+                                <BsListUl className="text-lg pt-1"/>
+                                <Typography
+                                  variant="small"
+                                  className="mb-1 block px-2 text-md font-medium text-blue-gray-600"
+                                  >
+                                  Progress
+                                </Typography>
+                              </div>
+                              <Progress
+                                value={(tasks_completed/tasks)*100}
+                                variant="gradient"
+                                color={((tasks_completed/tasks)*100) === 100 ? "green" : "blue"}
+                                className="h-1"
                               />
-                            </Tooltip>
-                          ))}
-                        </td>
-                      </tr>
-                    );
+                            </div>
+                          </td>
+                          <td className={`${className} last:rounded-r-xl last:bg-blue-gray-50/50`}>
+                            {projectsTableData[1].members.map(({ img, name }, key) => (
+                              <Tooltip key={name} content={name}>
+                                <Avatar
+                                  src={img}
+                                  alt={name}
+                                  size="xs"
+                                  variant="circular"
+                                  className={`cursor-pointer border-2 border-white ${
+                                    key === 0 ? "" : "-ml-2.5"
+                                  }`}
+                                />
+                              </Tooltip>
+                            ))}
+                          </td>
+                        </tr>
+                      );
+                    }
+                  ): null
                   }
-                ): null
-                }
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            }
           </CardBody>
         </Card>
         <div className="px-5 bg-transparent">
