@@ -59,7 +59,7 @@ export function Home() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
       setData(JSON.parse(this.responseText));
-      setLoading(false)
+      setLoading(true)
     }
     
     try{
@@ -71,10 +71,10 @@ export function Home() {
     }
   }
 
-  // useEffect(() => {
-  //   getProjects()
-  //   setInterval(() => getProjects(), 10000);
-  // }, [])
+  useEffect(() => {
+    getProjects()
+    setInterval(() => getProjects(), 10000);
+  }, [])
   
   return (
     <div className="">
